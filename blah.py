@@ -1,7 +1,4 @@
 print("Hello")
-x = 50
-y = 33
+x = 1
+y = 1
 
-
-print("I Dont know")
-print("I wonder if it will switch")
