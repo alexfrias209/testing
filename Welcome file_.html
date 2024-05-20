@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome file</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h1 id="run-commands-in-terminal">Run commands in terminal</h1>
+<p><strong>Note</strong>: Use linux or window’s wsl ubuntu</p>
+<h3 id="installing-miniconda">Installing Miniconda</h3>
+<ol>
+<li><strong>Look online for YouTube videos for your specific computer.</strong></li>
+<li><strong>If using Linux or WSL for 64 bit system, run each line in terminal:</strong><pre class=" language-sh"><code class="prism  language-sh">wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+chmod +x Miniconda3-latest-Linux-x86_64.sh
+./Miniconda3-latest-Linux-x86_64.sh
+conda init
+source ~/.bashrc
+conda --version
+
+
+</code></pre>
+</li>
+</ol>
+<h3 id="installing-github-cli">Installing GitHub CLI</h3>
+<ol>
+<li><strong>Create and activate a Conda environment by running these commands in terminal:</strong><pre class=" language-sh"><code class="prism  language-sh">conda create --name test python
+conda activate test
+</code></pre>
+</li>
+<li><strong>Install GitHub CLI:</strong><pre class=" language-sh"><code class="prism  language-sh">conda install gh --channel conda-forge
+gh --version
+</code></pre>
+</li>
+</ol>
+<h3 id="cloning-the-research-github-project">Cloning the Research GitHub Project</h3>
+<p><strong>Note</strong>: Might give error first time using CLI, and will ask to log in with your GitHub credentials. Just follow instructions the terminal gives.</p>
+<ol>
+<li><strong>Clone the repository:</strong><pre class=" language-sh"><code class="prism  language-sh">gh repo clone pyEdTools/autograder
+</code></pre>
+</li>
+</ol>
+<h3 id="creating-and-installing-axolotl-repositorypackages-on-personal-linuxwsl-system">Creating and installing axolotl repository/packages on personal linux/wsl system</h3>
+<p><strong>Note</strong>: You need a 3090 Ti GPU or you will get CUDA out of memory errors.</p>
+<ol>
+<li><strong>Clone the Axolotl repository and install necessary packages:</strong><pre class=" language-sh"><code class="prism  language-sh">gh repo clone OpenAccess-AI-Collective/axolotl
+cd axolotl
+pip install torch torchvision torchaudio
+pip install packaging ninja
+export MAX_JOBS=1
+pip install -e '.[flash-attn,deepspeed]'
+</code></pre>
+</li>
+</ol>
+<h2 id="instructions-for-installing-everything-in-a-cluster">Instructions for Installing Everything in a Cluster</h2>
+<p><strong>Note</strong>: Don’t use sudo commands on cluster</p>
+<p><strong>Ensure you have the UC Merced VPN installed:</strong><br>
+<a href="https://library.ucmerced.edu/vpn">Connecting Off Campus (VPN) | UC Merced Library</a></p>
+<h4 id="installing-miniconda-1">Installing Miniconda</h4>
+<ol>
+<li><strong>Download and install Miniconda:</strong><pre class=" language-sh"><code class="prism  language-sh">wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+chmod +x Miniconda3-latest-Linux-x86_64.sh
+./Miniconda3-latest-Linux-x86_64.sh
+export PATH="$HOME/miniconda3/bin:$PATH"
+source ~/.bashrc
+</code></pre>
+</li>
+</ol>
+<h4 id="installing-github-cli-1">Installing GitHub CLI</h4>
+<ol>
+<li><strong>Download and install GitHub CLI:</strong><pre class=" language-sh"><code class="prism  language-sh">wget https://github.com/cli/cli/releases/download/v2.45.0/gh_2.45.0_linux_amd64.tar.gz
+tar xvf gh_2.45.0_linux_amd64.tar.gz
+cd gh_2.45.0_linux_amd64
+mkdir -p ~/bin
+mv ./bin/gh ~/bin/
+chmod +x ~/bin/gh
+export PATH="$HOME/bin:$PATH"
+source ~/.bashrc
+gh --version
+</code></pre>
+</li>
+</ol>
+<h4 id="creating-and-installing-axolotl-repositorypackages">Creating and Installing Axolotl Repository/Packages</h4>
+<p><strong>Note</strong>: If on cluster, clone repository inside data folder</p>
+<ol>
+<li><strong>Clone the repository and set up the environment:</strong><pre class=" language-sh"><code class="prism  language-sh">gh repo clone OpenAccess-AI-Collective/axolotl
+conda create -n axo python=3.12.1
+conda activate axo
+cd axolotl
+pip install torch torchvision torchaudio
+pip install packaging
+pip install ninja
+module load gcc
+module load cuda
+pip install -e '.[flash-attn,deepspeed]'
+</code></pre>
+</li>
+</ol>
+<h4 id="finetuning-on-cluster">Finetuning on cluster</h4>
+<ol>
+<li><strong>Start interactive session</strong><pre class=" language-sh"><code class="prism  language-sh">srun --pty --nodes=1 --ntasks-per-node=1 --gres=gpu:1 --mem=64G -p test --time=0:50:00 /bin/bash
+</code></pre>
+</li>
+<li>Go to axolotl folder and activate conda environment where axolotl packages were installed<pre class=" language-sh"><code class="prism  language-sh">cd axolotl 
+conda activate axo
+</code></pre>
+</li>
+<li>Run this command to finetune<pre class=" language-sh"><code class="prism  language-sh">accelerate launch -m axolotl.cli.train examples/llama-3/lora-8b.yml
+</code></pre>
+</li>
+</ol>
+<p><strong>See video for finetuning, uploading adapter to huggingface and running inference</strong><br>
+<a href="https://youtu.be/XVgakGnO14o">https://youtu.be/XVgakGnO14o</a></p>
+<!--stackedit_data:&#10;eyJoaXN0b3J5IjpbLTExOTgwMTgyNTFdfQ==&#10;-->
+</div>
+</body>
+
+</html>
